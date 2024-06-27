@@ -1,9 +1,14 @@
-import React, { useContext } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import React, {useContext, useState} from 'react';
+import {StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions} from 'react-native';
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import CartContext from '../CartContext';
+
+// Получаем ширину экрана
+const { width } = Dimensions.get('window');
 
 const CartScreen = () => {
     const { cartItems, removeFromCart, clearCart } = useContext(CartContext);
+    const [selectedIndex, setSelectedIndex] = useState(0);
 
     const renderCartItem = ({ item }) => (
         <View style={styles.cartItem}>
@@ -20,6 +25,14 @@ const CartScreen = () => {
 
     return (
         <View style={styles.container}>
+            <SegmentedControl
+                values={['В ресторане', 'За столиком', 'С собой']}
+                selectedIndex={selectedIndex}
+                onChange={(event) => {
+                    setSelectedIndex(event.nativeEvent.selectedSegmentIndex);
+                }}
+                style={styles.segmentedControl}
+            />
             {cartItems.length === 0 ? (
                 <Text style={styles.emptyCartText}>Корзина пуста</Text>
             ) : (
@@ -89,6 +102,9 @@ const styles = StyleSheet.create({
     clearCartText: {
         color: 'white',
         fontSize: 16,
+    },
+    segmentedControl: {
+        width: width - 40, // ширина экрана минус отступы
     },
 });
 
