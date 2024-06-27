@@ -1,13 +1,15 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import { StyleSheet, Image } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from "@react-navigation/native";
-import { Ionicons } from '@expo/vector-icons'; // импорт иконок из пакета @expo/vector-icons
+import { Ionicons } from '@expo/vector-icons';
 import CatalogScreen from "./pages/CatalogScreen";
 import ProfileScreen from "./pages/ProfileScreen";
 import DetailScreen from "./pages/DetailScreen";
 import { MyTheme } from "./GlobalTheme";
+import CartScreen from "./pages/CartScreen";
+import { CartProvider } from './CartContext';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,16 +38,20 @@ function CatalogStack() {
     );
 }
 
-export default function App() {
+function App() {
+
     return (
+        <CartProvider>
         <NavigationContainer theme={MyTheme}>
             <Tab.Navigator
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
 
-                        if (route.name === 'Главная') {
-                            iconName = focused ? 'home' : 'home-outline';
+                        if (route.name === 'Меню') {
+                            iconName = focused ? 'restaurant' : 'restaurant-outline';
+                        } else if (route.name === 'Корзина') {
+                            iconName = focused ? 'cart' : 'cart-outline';
                         } else if (route.name === 'Профиль') {
                             iconName = focused ? 'person' : 'person-outline';
                         }
@@ -53,16 +59,19 @@ export default function App() {
                         return <Ionicons name={iconName} size={size} color={color} />;
                     },
                     tabBarActiveTintColor: '#ef0202',
-                    tabBarInactiveTintColor: 'gray',
-                    headerShown: false,
+                    tabBarInactiveTintColor: 'gray'
                 })}
             >
-                <Tab.Screen name="Главная" component={CatalogStack} />
+                <Tab.Screen name="Меню" options={{headerShown: false}} component={CatalogStack} />
+                <Tab.Screen name="Корзина" component={CartScreen} options={{tabBarBadge: null,}} />
                 <Tab.Screen name="Профиль" component={ProfileScreen} />
             </Tab.Navigator>
         </NavigationContainer>
+        </CartProvider>
     );
 }
+
+export default App;
 
 const styles = StyleSheet.create({
     container: {

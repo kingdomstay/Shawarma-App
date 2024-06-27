@@ -1,38 +1,16 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import foodCatalog from '../foodCatalog';
 
 const { width } = Dimensions.get('window');
 const itemWidth = width * 0.45; // ширина элемента, примерно половина ширины экрана
-
-const foodCatalog = [
-    {
-        id: '1',
-        name: 'Шаурма',
-        image: require('../images/shawerma.png'),
-    },
-    {
-        id: '2',
-        name: 'Кебаб',
-        image: require('../images/kebab.png'),
-    },
-    {
-        id: '3',
-        name: 'Тандыр',
-        image: require('../images/tandyr.png'),
-    },
-    {
-        id: '4',
-        name: 'Напитки',
-        image: require('../images/drinks.png'),
-    },
-];
 
 const CatalogScreen = ({ navigation }) => {
 
     const renderFoodItem = ({ item }) => (
         <TouchableOpacity
             style={[styles.foodItem, { width: itemWidth, height: itemWidth * 1.2 }]} // высота примерно на 20% больше ширины
-            onPress={() => navigation.navigate('О разделе', { itemId: item.id, itemName: item.name })}
+            onPress={() => navigation.navigate('О разделе', { category: item.category })}
         >
             <Image source={item.image} style={styles.foodItemImage} />
             <Text style={styles.foodItemText}>{item.name}</Text>
@@ -42,7 +20,7 @@ const CatalogScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <FlatList
-                style={{paddingTop: 10}}
+                style={{paddingTop: 5}}
                 data={foodCatalog}
                 renderItem={renderFoodItem}
                 keyExtractor={item => item.id}
